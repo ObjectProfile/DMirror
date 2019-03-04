@@ -138,7 +138,7 @@ DMirror >> spawnProcessesAndWait [
 		semaphores do: #wait.
 		self getResults.
 		self cleanTmpFiles 
-	] on: DMirrorProcessNotification do: [ :e | ^ nil ].
+	] on: DMirrorProcessNotification do: [ :e | Semaphore new wait ].
 	^ results
 ]
 

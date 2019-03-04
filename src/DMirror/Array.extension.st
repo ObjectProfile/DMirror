@@ -2,7 +2,7 @@ Extension { #name : #Array }
 
 { #category : #'*DMirror' }
 Array >> parallelCollect: aBlock inCores: numberOfCores [
-	^ DMirror 
+	^ (DMirror 
 			runMirror: aBlock
-			workloadArray: (DMirror splitArray: self inParts: numberOfCores)
+			workloadArray: (DMirror splitArray: self inParts: numberOfCores)) flatCollect: #yourself
 ]
