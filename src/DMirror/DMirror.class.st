@@ -17,14 +17,7 @@ Class {
 	#category : #DMirror
 }
 
-{ #category : #'mirror-spawning' }
-DMirror class >> cleanTemporaryFiles [
-	self workersId do: [ :workerId |
-		(self filenameForWorker: workerId) asFileReference deleteIfAbsent: [  ] ].
-	self imageFileReference deleteIfAbsent: [  ]
-]
-
-{ #category : #accessing }
+{ #category : #'public-api' }
 DMirror class >> createMirror: aBlock workloadArray: arrayOfObjects [
 	self currentInstance: (DMirror new
 										action: aBlock;
@@ -44,58 +37,14 @@ DMirror class >> currentInstance: anObject [
 	CurrentInstance := anObject
 ]
 
-{ #category : #'mirror-spawning' }
-DMirror class >> generateTemporaryImage [
-	Smalltalk image backupImageInFileNamed: self imageFilename
+{ #category : #'public-api' }
+DMirror class >> parallelizeAction: aBlock onWorkLoad: anArray [
+	^ self runMirror: aBlock workloadArray: anArray
 ]
 
 { #category : #'public-api' }
-DMirror class >> parallelizeAction: aBlock onWorkLoad: anArray [
-	self action: aBlock.
-	self workLoadArray: anArray.
-	self cleanTemporaryFiles.
-	self generateTemporaryImage.
-	^ [
-		self spawnProcessesAndWait.
-		self retrieveResults.
-		] ensure: [ self cleanTemporaryFiles ]
-]
-
-{ #category : #'mirror-spawning' }
-DMirror class >> retrieveResults [
-	^ self workersId collect: [ :workerId |
-		FLMaterializer materializeFromFileNamed: (DMirror filenameForWorker: workerId ) ]
-]
-
-{ #category : #accessing }
 DMirror class >> runMirror: aBlock workloadArray: arrayOfObjects [
 	^ (self createMirror: aBlock workloadArray: arrayOfObjects) run
-]
-
-{ #category : #'mirror-spawning' }
-DMirror class >> spawnProcessAndWaitForWorker: anInteger [
-	OSSUnixSubprocess new
-		command: Smalltalk vm binary fullPath pathString;
-		arguments: {
-			'--headless'.
-			self imageFilename.
-			'dmirror'.
-			anInteger asString
-			};
-		terminateOnShutdown;
-		runAndWait
-	
-]
-
-{ #category : #'mirror-spawning' }
-DMirror class >> spawnProcessesAndWait [
-	| semaphores |
-	semaphores := self workersId collect: [ :i | Semaphore new ].
-	self workersId do: [ :workerId |
-		[ 
-			self spawnProcessAndWaitForWorker: workerId.
-			(semaphores at: workerId) signal ] fork ].
-	semaphores do: #wait
 ]
 
 { #category : #accessing }

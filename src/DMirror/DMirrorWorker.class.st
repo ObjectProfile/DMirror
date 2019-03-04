@@ -95,7 +95,7 @@ DMirrorWorker >> initialize [
 	action := #yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
 DMirrorWorker >> isActive [
 	^ self pid notNil
 ]
