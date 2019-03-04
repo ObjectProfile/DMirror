@@ -50,7 +50,7 @@ DMirrorWorker >> action: anObject [
 
 { #category : #'as yet unclassified' }
 DMirrorWorker >> deleteTmpFile [
-	self filename asFileReference delete
+	self filename asFileReference deleteIfAbsent: []
 ]
 
 { #category : #accessing }

@@ -84,8 +84,8 @@ DMirror >> changesFilename [
 { #category : #'as yet unclassified' }
 DMirror >> cleanTmpFiles [
 	self workers do: #deleteTmpFile.
-	self imageFilename asFileReference delete.
-	self changesFilename asFileReference delete.
+	self imageFilename asFileReference deleteIfAbsent: [].
+	self changesFilename asFileReference delete deleteIfAbsent: [].
 ]
 
 { #category : #'as yet unclassified' }
@@ -130,14 +130,13 @@ DMirror >> run [
 DMirror >> spawnProcessesAndWait [
 	| semaphores |
 	[ 
-		self generateImage.
+		[ self generateImage.
 		semaphores := self workers collect: [ :worker | | semaphore |
 			semaphore := Semaphore new.
 			[ [ worker spawnProcessAndWait ] ensure: [ semaphore signal ] ] fork.
 			semaphore ].
 		semaphores do: #wait.
-		self getResults.
-		self cleanTmpFiles 
+		self getResults ] ensure: [ self cleanTmpFiles ]
 	] on: DMirrorProcessNotification do: [ :e | [ true ] whileTrue: [ (Delay forSeconds: 1) wait ] ].
 	^ results
 ]
