@@ -9,10 +9,8 @@ Class {
 		'imageBasename'
 	],
 	#classVars : [
-		'Action',
 		'CurrentInstance',
-		'Filename',
-		'WorkLoadArray'
+		'DefaultCores'
 	],
 	#category : #DMirror
 }
@@ -37,6 +35,16 @@ DMirror class >> currentInstance: anObject [
 	CurrentInstance := anObject
 ]
 
+{ #category : #accessing }
+DMirror class >> defaultCores [
+	^ DefaultCores ifNil: [ DefaultCores := 2 ]
+]
+
+{ #category : #accessing }
+DMirror class >> defaultCores: anObject [
+	DefaultCores := anObject
+]
+
 { #category : #'public-api' }
 DMirror class >> parallelizeAction: aBlock onWorkLoad: anArray [
 	^ self runMirror: aBlock workloadArray: anArray
@@ -45,6 +53,17 @@ DMirror class >> parallelizeAction: aBlock onWorkLoad: anArray [
 { #category : #'public-api' }
 DMirror class >> runMirror: aBlock workloadArray: arrayOfObjects [
 	^ (self createMirror: aBlock workloadArray: arrayOfObjects) run
+]
+
+{ #category : #'public-api' }
+DMirror class >> splitArray: anArray inParts: anInteger [
+	| step result |
+	step := (anArray size / anInteger) floor.
+	result := OrderedCollection new.
+	1 to: anInteger - 1 do: [ :i | 
+		result add: (anArray copyFrom: ((i - 1) * step) + 1 to: i * step) ].
+	result add: (anArray copyFrom: ((anInteger - 1) * step) + 1 to: anArray size).
+	^ result
 ]
 
 { #category : #accessing }
