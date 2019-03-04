@@ -138,7 +138,7 @@ DMirror >> spawnProcessesAndWait [
 		semaphores do: #wait.
 		self getResults.
 		self cleanTmpFiles 
-	] on: DMirrorProcessNotification do: [ :e | ^ #() ].
+	] on: DMirrorProcessNotification do: [ :e | [ true ] whileTrue: [ (Delay forSeconds: 1) wait ] ].
 	^ results
 ]
 
