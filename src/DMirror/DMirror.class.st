@@ -56,6 +56,11 @@ DMirror class >> runMirror: aBlock workloadArray: arrayOfObjects [
 ]
 
 { #category : #'public-api' }
+DMirror class >> splitArray: anArray [
+	^ self splitArray: anArray inParts: DMirror defaultCores
+]
+
+{ #category : #'public-api' }
 DMirror class >> splitArray: anArray inParts: anInteger [
 	| step result |
 	step := (anArray size / anInteger) floor.
