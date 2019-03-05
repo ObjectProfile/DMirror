@@ -24,7 +24,7 @@ You can use the method `DMirror class>>defaultCores:` to set the number of worke
 
 ## Arbitrary worker execution
 
-DMirror allow users to execute arbitrary pieces of code in different workers. The workers have access to the whole system, all the libraries available in the current image and their globals. Nevetherless, the user may use them as read-only values, because the library behavior is not defined in case of side-effects performed by the user code execution.
+DMirror allow users to execute arbitrary pieces of code in different workers. The workers have access to the whole system, all the libraries available in the current image and their globals. Nevertheless, the user may use them as read-only values, because the library behavior is not defined in case of side-effects performed by the user code execution.
 
 The following snippet allow a user to define an arbitrary code to be parallelized in several mirrors or workers. The concrete action of the workers is to remove the spaces in the strings.
 
