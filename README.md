@@ -39,7 +39,19 @@ The mirror will spawn a new vm process for each element in the workloadArray, th
 ## Collection API
 
 DMirror implements several of the Collection API including: 
-`collect:` -> `parallelCollect:`
+
+- `collect:` -> `parallelCollect:`
+- `collect:thenReject:` -> `parallelCollect:thenReject:`
+- `collect:thenSelect:` -> `parallelCollect:thenSelect:`
+- `select:` -> `parallelSelect:`
+- `select:thenCollect:` -> `parallelSelect:thenCollect:`
+- `reject:` -> `parallelReject:`
+- `reject:thenCollect:` -> `parallelReject:thenCollect:`
+- `flatCollect:` -> `parallelFlatCollect:`
+- `groupedBy:` -> `parallelGroupedBy:`
+- `anySatisfy:` -> `parallelAnySatisfy:`
+- `allSatisfy:` -> `parallelAllSatisfy:`
+- `noneSatisfy:` -> `parallelNoneSatisfy:`
 
 ## Error debugging
 
