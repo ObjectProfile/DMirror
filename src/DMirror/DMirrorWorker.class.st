@@ -6,7 +6,8 @@ Class {
 		'workload',
 		'action',
 		'filename',
-		'imageFilename'
+		'imageFilename',
+		'result'
 	],
 	#category : #DMirror
 }
@@ -59,13 +60,13 @@ DMirrorWorker >> filename [
 ]
 
 { #category : #'as yet unclassified' }
-DMirrorWorker >> generateImageFile [
-	Smalltalk image backupImageInFileNamed: self imageFilename
+DMirrorWorker >> getResult [
+	^ result := FLMaterializer materializeFromFileNamed: filename
 ]
 
-{ #category : #'as yet unclassified' }
-DMirrorWorker >> getResult [
-	^ FLMaterializer materializeFromFileNamed: filename
+{ #category : #testing }
+DMirrorWorker >> hasError [
+	^ self result isContext
 ]
 
 { #category : #accessing }
@@ -100,6 +101,11 @@ DMirrorWorker >> isActive [
 	^ self pid notNil
 ]
 
+{ #category : #accessing }
+DMirrorWorker >> result [
+	^ result
+]
+
 { #category : #running }
 DMirrorWorker >> run [
 	| ans |
@@ -111,7 +117,13 @@ DMirrorWorker >> run [
 DMirrorWorker >> runOnMirror [
 	[ [ 
 		self run.
-		Smalltalk exit: 0 ] on: Error do: [ Smalltalk exit: 1 ] ] ifCurtailed: [ Smalltalk exit: 1 ]
+		Smalltalk exit: 0 ] 
+			on: Error 
+			do: [ :e |
+				FuelOutStackDebugAction 
+					serializeTestFailureContext: e signalerContext 
+					toFileNamed: self filename.
+				Smalltalk exit: 1 ] ] ifCurtailed: [ Smalltalk exit: 1 ]
 ]
 
 { #category : #'as yet unclassified' }

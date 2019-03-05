@@ -107,7 +107,11 @@ DMirror >> generateWorkers [
 
 { #category : #'as yet unclassified' }
 DMirror >> getResults [
-	results := self workers collect: #getResult
+	| workersWithErrors |
+	self workers do: #getResult.
+	workersWithErrors := self workers select: #hasError.
+	workersWithErrors ifNotEmpty: [ 
+		(DMirrorExternalError on: workersWithErrors) signal ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -119,6 +123,11 @@ DMirror >> imageFilename [
 DMirror >> initialize [
 	super initialize.
 	imageBasename := UUID new printString , '.deleteme'.
+]
+
+{ #category : #accessing }
+DMirror >> results [
+	^ self workers collect: #result
 ]
 
 { #category : #'as yet unclassified' }
@@ -136,9 +145,9 @@ DMirror >> spawnProcessesAndWait [
 			[ [ worker spawnProcessAndWait ] ensure: [ semaphore signal ] ] fork.
 			semaphore ].
 		semaphores do: #wait.
-		self getResults ] ensure: [ self cleanTmpFiles ]
-	] on: DMirrorProcessNotification do: [ :e | [ true ] whileTrue: [ (Delay forSeconds: 1) wait ] ].
-	^ results
+		self getResults. ] ensure: [ self cleanTmpFiles ]
+	] on: DMirrorProcessNotification do: [ :e | Semaphore new wait ].
+	^ self results
 ]
 
 { #category : #accessing }

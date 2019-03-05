@@ -19,6 +19,6 @@ DMRunCommandLineHandler >> activate [
 	| worker workerId |
 	workerId := self arguments first asInteger.
 	worker := DMirror currentInstance workers at: workerId.
-	worker run.
+	worker runOnMirror.
 	^ self exitSuccess
 ]
