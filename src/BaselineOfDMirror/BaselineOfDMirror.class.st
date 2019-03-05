@@ -1,7 +1,7 @@
 Class {
 	#name : #BaselineOfDMirror,
 	#superclass : #BaselineOf,
-	#category : #BaselineForDMirror
+	#category : #BaselineOfDMirror
 }
 
 { #category : #baselines }
