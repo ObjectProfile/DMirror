@@ -7,7 +7,8 @@ Class {
 		'action',
 		'filename',
 		'imageFilename',
-		'result'
+		'result',
+		'process'
 	],
 	#category : #DMirror
 }
@@ -131,7 +132,7 @@ DMirrorWorker >> spawnProcessAndWait [
 	Smalltalk shortImageName = self imageFilename ifTrue: [ 
 		DMirrorProcessNotification signal. 
 		^ self ].
-	OSSUnixSubprocess new
+	process := OSSUnixSubprocess new
 		command: Smalltalk vm binary fullPath pathString;
 		arguments: {
 			'--headless'.
@@ -139,8 +140,9 @@ DMirrorWorker >> spawnProcessAndWait [
 			'dmirror'.
 			self id asString
 			};
-		terminateOnShutdown;
-		runAndWait
+		redirectStderr;
+		terminateOnShutdown.
+	process runAndWait
 ]
 
 { #category : #accessing }
