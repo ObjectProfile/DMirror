@@ -140,7 +140,7 @@ DMirrorWorker >> spawnProcessAndWait [
 			'dmirror'.
 			self id asString
 			};
-		redirectStderr;
+		"redirectStderr;" "Do not redirect stdout or stderr because it will cause deadlocks."
 		terminateOnShutdown.
 	process runAndWait
 ]
