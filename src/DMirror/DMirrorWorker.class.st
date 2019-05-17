@@ -50,7 +50,7 @@ DMirrorWorker >> action: anObject [
 	action := anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 DMirrorWorker >> deleteTmpFile [
 	self filename asFileReference deleteIfAbsent: []
 ]
@@ -60,7 +60,7 @@ DMirrorWorker >> filename [
 	^ filename
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 DMirrorWorker >> getResult [
 	^ result := FLMaterializer materializeFromFileNamed: filename
 ]
@@ -102,32 +102,32 @@ DMirrorWorker >> isActive [
 	^ self pid notNil
 ]
 
+{ #category : #running }
+DMirrorWorker >> primitiveRun [
+	| ans |
+	ans := self action cull: workload cull: self id.
+	FLSerializer serialize: ans toFileNamed: filename
+]
+
 { #category : #accessing }
 DMirrorWorker >> result [
 	^ result
 ]
 
 { #category : #running }
-DMirrorWorker >> run [
-	| ans |
-	ans := self action cull: workload cull: self id.
-	FLSerializer serialize: ans toFileNamed: filename
-]
-
-{ #category : #running }
 DMirrorWorker >> runOnMirror [
 	[ [ 
-		self run.
+		self primitiveRun.
 		Smalltalk exit: 0 ] 
 			on: Error 
 			do: [ :e |
 				FuelOutStackDebugAction 
 					serializeTestFailureContext: e signalerContext 
 					toFileNamed: self filename.
-				Smalltalk exit: 1 ] ] ifCurtailed: [ Smalltalk exit: 1 ]
+				Smalltalk exit: 0 ] ] ifCurtailed: [ Smalltalk exit: 1 ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 DMirrorWorker >> spawnProcessAndWait [
 	Smalltalk shortImageName = self imageFilename ifTrue: [ 
 		DMirrorProcessNotification signal. 

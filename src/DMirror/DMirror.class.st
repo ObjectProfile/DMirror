@@ -81,19 +81,19 @@ DMirror >> action: anObject [
 	action := anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 DMirror >> changesFilename [
 	 ^ imageBasename , '.changes'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 DMirror >> cleanTmpFiles [
 	self workers do: #deleteTmpFile.
 	self imageFilename asFileReference deleteIfAbsent: [].
 	self changesFilename asFileReference delete deleteIfAbsent: [].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 DMirror >> generateImage [
 	Smalltalk image backupImageInFileNamed: self imageFilename.
 	Smalltalk shortImageName = self imageFilename ifTrue: [ 
@@ -110,7 +110,7 @@ DMirror >> generateWorkers [
 													imageFilename: self imageFilename ])
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 DMirror >> getResults [
 	| workersWithErrors |
 	self workers do: #getResult.
@@ -119,7 +119,7 @@ DMirror >> getResults [
 		(DMirrorExternalError on: workersWithErrors) signal ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 DMirror >> imageFilename [
 	 ^ imageBasename , '.image'
 ]
@@ -135,12 +135,12 @@ DMirror >> results [
 	^ self workers collect: #result
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 DMirror >> run [
 	^ self spawnProcessesAndWait
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 DMirror >> spawnProcessesAndWait [
 	| semaphores |
 	[ 
