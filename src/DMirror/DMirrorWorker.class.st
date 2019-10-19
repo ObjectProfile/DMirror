@@ -129,20 +129,27 @@ DMirrorWorker >> runOnMirror [
 
 { #category : #actions }
 DMirrorWorker >> spawnProcessAndWait [
-	Smalltalk shortImageName = self imageFilename ifTrue: [ 
-		DMirrorProcessNotification signal. 
-		^ self ].
-	process := OSSUnixSubprocess new
-		command: Smalltalk vm binary fullPath pathString;
-		arguments: {
-			'--headless'.
-			self imageFilename.
-			'dmirror'.
-			self id asString
-			};
-		"redirectStderr;" "Do not redirect stdout or stderr because it will cause deadlocks."
-		terminateOnShutdown.
-	process runAndWait
+	| count |
+	count := 0.
+	[ count < 5 and: [ filename asFileReference exists not ] ] whileTrue: [ 
+		count := count + 1.
+		count > 1 ifTrue: [ 
+			Transcript show: 'Retrying worker ' , id asString , ' for the' , count asString , ' time.' ].
+		Smalltalk shortImageName = self imageFilename ifTrue: [ 
+			DMirrorProcessNotification signal. 
+			^ self ].
+		process := OSSUnixSubprocess new
+			command: Smalltalk vm binary fullPath pathString;
+			arguments: {
+				'--headless'.
+				self imageFilename.
+				'dmirror'.
+				self id asString
+				};
+			"redirectStderr;" "Do not redirect stdout or stderr because it will cause deadlocks."
+			terminateOnShutdown.
+		process runAndWait.
+		]
 ]
 
 { #category : #accessing }
