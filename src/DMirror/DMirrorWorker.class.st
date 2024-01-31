@@ -122,7 +122,7 @@ DMirrorWorker >> runOnMirror [
 			on: Error 
 			do: [ :e |
 				FLDebuggerStackSerializer 
-					FLDebuggerStackSerializer: e signalerContext 
+					serializeStackFromContext: e signalerContext 
 					toFileNamed: self filename.
 				Smalltalk exit: 0 ] ] ifCurtailed: [ Smalltalk exit: 1 ]
 ]
