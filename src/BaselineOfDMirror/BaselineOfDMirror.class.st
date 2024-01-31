@@ -13,7 +13,7 @@ BaselineOfDMirror >> baseline: spec [
 			spec
 				baseline: 'OSSubprocess' 
 				with: [ 
-					spec repository: 'github://pharo-contributions/OSSubprocess:v1.0.0/repository' ].
+					spec repository: 'github://pharo-contributions/OSSubprocess:master/repository' ].
 			spec
 				package: 'DMirror' with: [ spec requires: 'OSSubprocess' ]
 			 ]
