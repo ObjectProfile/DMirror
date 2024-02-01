@@ -121,8 +121,8 @@ DMirrorWorker >> runOnMirror [
 		Smalltalk exit: 0 ] 
 			on: Error 
 			do: [ :e |
-				FuelOutStackDebugAction 
-					serializeTestFailureContext: e signalerContext 
+				FLDebuggerStackSerializer 
+					serializeStackFromContext: e signalerContext 
 					toFileNamed: self filename.
 				Smalltalk exit: 0 ] ] ifCurtailed: [ Smalltalk exit: 1 ]
 ]
